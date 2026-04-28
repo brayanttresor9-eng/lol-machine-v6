@@ -21,8 +21,6 @@ def creer_session_stripe():
         st.error(f"Erreur Stripe: {e}")
         return None
 
-stripe.api_key = st.secrets["STRIPE_KEY"]
-
 st.set_page_config(page_title="LOL Machine V6 🍀", page_icon="🍀", layout="wide")
 
 
