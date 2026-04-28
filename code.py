@@ -1,7 +1,7 @@
 import streamlit as st
 import stripe
 
-
+stripe.api_key = st.secrets["STRIPE_KEY"]
 
 st.set_page_config(page_title="LOL Machine V6 🍀", page_icon="🍀", layout="wide")
 
@@ -28,18 +28,6 @@ stripe.api_key = st.secrets["STRIPE_KEY"]
 if 'user' not in st.session_state: st.session_state.user = None
 if 'premium' not in st.session_state: st.session_state.premium = False
 
-def creer_session_stripe():
-    try:
-        checkout_session = stripe.checkout.Session.create(
-            line_items=[{'price': 'price_1TQyhLDmScq27Uw61o6wMkiC', 'quantity': 1}], # Remplace price_...
-            mode='subscription',
-            success_url='http://localhost:8501?session_id={CHECKOUT_SESSION_ID}',
-            cancel_url='http://localhost:8501',
-        )
-        return checkout_session.url
-    except Exception as e:
-        st.error(f"Erreur Stripe: {e}")
-        return None
 
 st.title("LOL Machine V6 🍀")
 
