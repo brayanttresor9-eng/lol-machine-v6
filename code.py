@@ -110,16 +110,25 @@ if st.button("RACONTE UNE BLAGUE 🍀", use_container_width=True, type="primary"
     else:
         st.error("❌ Réservé aux membres Premium !")
         st.info("Débloque 50 blagues illimitées pour seulement 5$/mois")
+        
+        # ICI LE BOUTON DEVENIR PREMIUM
         if st.button("DEVENIR PREMIUM 👑", use_container_width=True):
             with st.spinner('Connexion à Stripe...'):
-                url = creer_session_stripe()
+                url = creer_session_stripe() # ← Appelle ta fonction Stripe
+                
+                # ICI TU METS LE ST.LINK_BUTTON 👇
                 if url:
-                    st.link_button("👉 PAYER 5$/MOIS SUR STRIPE", url, use_container_width=True, type="primary")
+                    st.link_button(
+                        "👉 PAYER 5$/MOIS SUR STRIPE",  # Texte du bouton
+                        url,                            # Lien Stripe généré
+                        use_container_width=True, 
+                        type="primary"                  # Bouton rouge
+                    )
                     st.success("Clique le bouton rouge ci-dessus 👆")
                 else:
-                    st.error("Erreur Stripe. Vérifie ta clé `STRIPE_KEY` dans Secrets.")
+                    st.error("Erreur Stripe. Vérifie ta clé dans Secrets.")
 
-# FOOTER
+# FOOTER  
 st.divider()
 st.caption("Fait avec ❤️ par BRAYANT | LOL Machine V6")
 
