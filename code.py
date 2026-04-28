@@ -73,15 +73,20 @@ BLAGUES = [
 # FONCTION STRIPE CHECKOUT
 def creer_session_stripe():
     try:
-        checkout_session = stripe.checkout.Session.create(
-            line_items=[{'price': 'price_1TQyhLDmScq27Uw61o6wMkiC', 'quantity': 1}],
-            mode='subscription',
-            success_url='https://brayanttresor9-eng-lol-machine-v6-code-cfngds.streamlit.app?session_id={CHECKOUT_SESSION_ID}',
-            cancel_url='https://brayanttresor9-eng-lol-machine-v6-code-cfngds.streamlit.app',
+        stripe.api_key = st.secrets["STRIPE_KEY"]
+        session = stripe.checkout.Session.create(
+            success_url="https://brayanttresor9-eng-lol-machine-v6-code-lkfeue.streamlit.app/?premium=true",
+            cancel_url="https://brayanttresor9-eng-lol-machine-v6-code-lkfeue.streamlit.app/",
+            payment_method_types=["card"],
+            line_items=[{
+                "price": "price_1TQyizDMScq27Uw6FhbJv1pS",  # Ton price_id Stripe
+                "quantity": 1,
+            }],
+            mode="subscription",
         )
-        return checkout_session.url
+        return session.url  # ← SI CETTE LIGNE MANQUE, ÇA MARCHE PAS
     except Exception as e:
-        st.error(f"Erreur Stripe: {e}")
+        st.error(f"Erreur Stripe: {e}")  # ← Ça va afficher l'erreur vraie
         return None
 
 # VÉRIFIE SI LE PAIEMENT EST VALIDÉ AU RETOUR DE STRIPE
