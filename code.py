@@ -71,23 +71,30 @@ BLAGUES = [
 
 # FONCTION STRIPE CHECKOUT
 def creer_session_stripe():
+    st.write("DEBUG 1: Fonction lancée") # ← Ça s'affiche sur l'app
+    
     try:
+        st.write("DEBUG 2: Je récupère la clé") 
         stripe.api_key = st.secrets["STRIPE_KEY"]
+        st.write("DEBUG 3: Clé récupérée") 
+        
         session = stripe.checkout.Session.create(
-            success_url="https://brayanttresor9-eng-lol-machine-v6-code-lkfeue.streamlit.app/?premium=true",
+            success_url="https://brayanttresor9-eng-lol-machine-v6-code-lkfeue.streamlit.app/?session_id={CHECKOUT_SESSION_ID}",
             cancel_url="https://brayanttresor9-eng-lol-machine-v6-code-lkfeue.streamlit.app/",
             payment_method_types=["card"],
             line_items=[{
-                "price": "price_1TQyizDMScq27Uw6FhbJv1pS",  # Ton price_id Stripe
+                "price": "price_1TQyizDMScq27Uw6FhbJv1pS",
                 "quantity": 1,
             }],
             mode="subscription",
         )
-        return session.url  # ← SI CETTE LIGNE MANQUE, ÇA MARCHE PAS
+        st.write("DEBUG 4: Session Stripe créée") 
+        st.write(session.url) # ← ON AFFICHE L'URL DIRECT
+        return session.url
+        
     except Exception as e:
-        st.error(f"Erreur Stripe: {e}")  # ← Ça va afficher l'erreur vraie
+        st.error(f"ERREUR STRIPE RÉELLE: {e}") # ← ÇA AFFICHE LA VRAIE ERREUR
         return None
-
 # VÉRIFIE SI LE PAIEMENT EST VALIDÉ AU RETOUR DE STRIPE
 query_params = st.query_params
 if "session_id" in query_params:
