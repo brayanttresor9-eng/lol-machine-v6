@@ -102,7 +102,6 @@ with col2:
     st.metric("Blagues lues", st.session_state.blagues_vues)
 
 st.divider()
-
 # BOUTON PRINCIPAL
 if st.button("RACONTE UNE BLAGUE 🍀", use_container_width=True, type="primary"):
     if st.session_state.premium:
@@ -113,10 +112,14 @@ if st.button("RACONTE UNE BLAGUE 🍀", use_container_width=True, type="primary"
         st.info("Débloque 50 blagues illimitées pour seulement 5$/mois")
         if st.button("DEVENIR PREMIUM 👑", use_container_width=True):
             url = creer_session_stripe()
-            if url: 
-                st.markdown(f"[👉 CLIQUE ICI POUR PAYER 5$/MOIS]({url})")
+            if url:
+                st.link_button("👉 PAYER 5$/MOIS SUR STRIPE", url, use_container_width=True)
+            else:
+                st.error("Erreur Stripe. Vérifie ta clé dans Secrets.")
 
 # FOOTER
 st.divider()
+st.caption("Fait avec ❤️ par BRAYANT | LOL Machine V6")
+
 st.caption("Fait avec ❤️ par BRAYANT | LOL Machine V6")
        
