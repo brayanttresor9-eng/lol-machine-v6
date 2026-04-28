@@ -23,7 +23,7 @@ def creer_session_stripe():
 
 st.set_page_config(page_title="LOL Machine V6 🍀", page_icon="🍀", layout="wide")
 
-stripe.api_key ="stripe.api_key = st.secrets["STRIPE_KEY"] "
+stripe.api_key ="st.secrets["STRIPE_KEY"] "
 
 
 if 'user' not in st.session_state: st.session_state.user = None
