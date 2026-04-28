@@ -6,7 +6,6 @@ import random
 st.set_page_config(page_title="LOL Machine V6 🍀", page_icon="🍀", layout="wide")
 
 # CLÉ STRIPE DEPUIS LES SECRETS
-stripe.api_key = st.secrets["STRIPE_KEY"]
 
 # INIT DES VARIABLES DE SESSION
 if 'user' not in st.session_state: 
