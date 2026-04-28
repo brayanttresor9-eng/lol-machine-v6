@@ -1,7 +1,7 @@
 import streamlit as st
 import stripe
 
-stripe.api_key = st.secrets["STRIPE_KEY"] # ← MODIF 1 : Clé sécurisée
+stripe.api_key = st.secrets["STRIPE_KEY"]
 
 st.set_page_config(page_title="LOL Machine V6 🍀", page_icon="🍀", layout="wide")
 
@@ -13,13 +13,14 @@ def creer_session_stripe():
         checkout_session = stripe.checkout.Session.create(
             line_items=[{'price': 'price_1TQyhLDmScq27Uw61o6wMkiC', 'quantity': 1}],
             mode='subscription',
-            success_url='https://lol-machine-v6.streamlit.app?session_id={CHECKOUT_SESSION_ID}', # ← MODIF 2
-            cancel_url='https://lol-machine-v6.streamlit.app', # ← MODIF 3
+            success_url='https://brayanttresor9-eng-lol-machine-v6-code-cfngds.streamlit.app?session_id={CHECKOUT_SESSION_ID}',
+            cancel_url='https://brayanttresor9-eng-lol-machine-v6-code-cfngds.streamlit.app',
         )
         return checkout_session.url
     except Exception as e:
         st.error(f"Erreur Stripe: {e}")
         return None
+
 
 st.set_page_config(page_title="LOL Machine V6 🍀", page_icon="🍀", layout="wide")
 
