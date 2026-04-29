@@ -69,49 +69,27 @@ BLAGUES = [
     "Pourquoi tu mets ton réveil à côté du café ? Pour me réveiller avec un expresso."
 ]
 
-# FONCTION STRIPE CHECKOUT
+import streamlit as st
+import stripe
+import random
+
+# 1. FONCTION STRIPE SEULE
 def creer_session_stripe():
-    st.write("DEBUG 1: Fonction lancée") # ← Ça s'affiche sur l'app
-    
     try:
-        st.write("DEBUG 2: Je récupère la clé") 
         stripe.api_key = st.secrets["STRIPE_KEY"]
-        st.write("DEBUG 3: Clé récupérée") 
-        
         session = stripe.checkout.Session.create(
-            success_url="https://brayanttresor9-eng-lol-machine-v6-code-lkfeue.streamlit.app/?session_id={CHECKOUT_SESSION_ID}",
-            cancel_url="https://brayanttresor9-eng-lol-machine-v6-code-lkfeue.streamlit.app/",
+            success_url="https://brayanttresor9-eng-lol-machine-v6-code-cfngds.streamlit.app/?session_id={CHECKOUT_SESSION_ID}",
+            cancel_url="https://brayanttresor9-eng-lol-machine-v6-code-cfngds.streamlit.app/",
             payment_method_types=["card"],
-            line_items=[{
-                "price": "price_1TQyizDMScq27Uw6FhbJv1pS",
-                "quantity": 1,
-            }],
+            line_items=[{"price": "price_1TQyizDMScq27Uw6FhbJv1pS", "quantity": 1}],
             mode="subscription",
         )
-        st.write("DEBUG 4: Session Stripe créée") 
-        st.write(session.url) # ← ON AFFICHE L'URL DIRECT
         return session.url
-        
     except Exception as e:
-        st.error(f"ERREUR STRIPE RÉELLE: {e}") # ← ÇA AFFICHE LA VRAIE ERREUR
+        st.error(f"ERREUR STRIPE: {e}")
         return None
-# VÉRIFIE SI LE PAIEMENT EST VALIDÉ AU RETOUR DE STRIPE
-query_params = st.query_params
-if "session_id" in query_params:
-    st.session_state.premium = True
-    st.balloons()
-    st.success("Paiement validé ! T'es Premium 👑")
 
-# INTERFACE
-st.title("LOL Machine V6 🍀")
-st.caption("La machine à blagues qui vaut 5$/mois")
-
-col1, col2 = st.columns(2)
-with col1:
-    st.metric("Statut", "👑 Premium" if st.session_state.premium else "Gratuit")
-with col2:
-    st.metric("Blagues lues", st.session_state.blagues_vues)
-
+# 2. TOUT LE RESTE DE L'APP ICI, PAS INDENTÉ
 st.divider()
 # BOUTON PRINCIPAL
 if st.button("RACONTE UNE BLAGUE 🍀", use_container_width=True, type="primary"):
@@ -131,17 +109,16 @@ if st.button("RACONTE UNE BLAGUE 🍀", use_container_width=True, type="primary"
 # 2. ON AFFICHE LE BOUTON ROUGE ICI, EN DEHORS DU AUTRE BOUTON
 if st.session_state.get('stripe_url'):
     st.link_button(
-        "👉 PAYER 5$/MOIS SUR STRIPE", 
-        st.session_state.stripe_url, 
-        use_container_width=True, 
+        "👉 PAYER 5$/MOIS SUR STRIPE",
+        st.session_state.stripe_url,
+        use_container_width=True,
         type="primary"
     )
     st.success("Clique le bouton rouge ci-dessus pour payer 👆")
     st.session_state.stripe_url = None # On reset après affichage
 
-# FOOTER  
+# FOOTER
 st.divider()
 st.caption("Fait avec ❤️ par BRAYANT | LOL Machine V6")
-
 
        
