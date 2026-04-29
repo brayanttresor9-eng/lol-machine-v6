@@ -122,22 +122,22 @@ if st.button("RACONTE UNE BLAGUE 🍀", use_container_width=True, type="primary"
         st.error("❌ Réservé aux membres Premium !")
         st.info("Débloque 50 blagues illimitées pour seulement 5$/mois")
         
-        # ICI LE BOUTON DEVENIR PREMIUM
+        # 1. ON CLIQUE ICI
         if st.button("DEVENIR PREMIUM 👑", use_container_width=True):
             with st.spinner('Connexion à Stripe...'):
-                url = creer_session_stripe() # ← Appelle ta fonction Stripe
-                
-                # ICI TU METS LE ST.LINK_BUTTON 👇
-                if url:
-                    st.link_button(
-                        "👉 PAYER 5$/MOIS SUR STRIPE",  # Texte du bouton
-                        url,                            # Lien Stripe généré
-                        use_container_width=True, 
-                        type="primary"                  # Bouton rouge
-                    )
-                    st.success("Clique le bouton rouge ci-dessus 👆")
-                else:
-                    st.error("Erreur Stripe. Vérifie ta clé dans Secrets.")
+                st.session_state.stripe_url = creer_session_stripe()
+                st.rerun() # ← FORCE LE RECHARGEMENT
+
+# 2. ON AFFICHE LE BOUTON ROUGE ICI, EN DEHORS DU AUTRE BOUTON
+if st.session_state.get('stripe_url'):
+    st.link_button(
+        "👉 PAYER 5$/MOIS SUR STRIPE", 
+        st.session_state.stripe_url, 
+        use_container_width=True, 
+        type="primary"
+    )
+    st.success("Clique le bouton rouge ci-dessus pour payer 👆")
+    st.session_state.stripe_url = None # On reset après affichage
 
 # FOOTER  
 st.divider()
