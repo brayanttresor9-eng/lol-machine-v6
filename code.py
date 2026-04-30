@@ -46,58 +46,27 @@ def creer_session_stripe():
             }],
             mode="subscription",
         )
-        return session.url
+        return session.url, None  # On renvoie l'URL + pas d'erreur
     except Exception as e:
-        st.error(f"ERREUR STRIPE: {e}")
-        return None
-
-# VERIFICATION PAIEMENT AU RETOUR DE STRIPE
-query_params = st.query_params
-if "session_id" in query_params and not st.session_state.premium:
-    try:
-        stripe.api_key = st.secrets["STRIPE_KEY"]
-        session = stripe.checkout.Session.retrieve(query_params["session_id"])
-        if session.payment_status == "paid":
-            st.session_state.premium = True
-            st.balloons()
-            st.success("🎉 Paiement réussi ! Tu es maintenant Premium !")
-    except Exception as e:
-        st.error(f"Erreur de vérification: {e}")
-
-# UI DE L'APP
-st.title("LOL Machine V6 🍀")
-st.caption("La machine à blagues qui vaut 5$/mois")
-
-col1, col2 = st.columns(2)
-with col1:
-    st.subheader("Statut")
-    if st.session_state.premium:
-        st.success("Premium 👑")
-    else:
-        st.warning("Gratuit")
-with col2:
-    st.subheader("Blagues lues")
-    st.metric(label="Total", value=st.session_state.blagues_vues)
-
-st.divider()
-
-# BOUTON PRINCIPAL BLAGUE
-if st.button("RACONTE UNE BLAGUE 🍀", use_container_width=True, type="primary"):
-    if st.session_state.premium:
-        st.success(random.choice(BLAGUES))
-        st.session_state.blagues_vues += 1
-        st.session_state.afficher_premium = False
-    else:
-        st.error("❌ Réservé aux membres Premium !")
-        st.info("Débloque 50 blagues illimitées pour seulement 5$/mois")
-        st.session_state.afficher_premium = True
+        return None, str(e)  # On renvoie pas d'URL + l'erreur
 
 # BOUTON PREMIUM - EN DEHORS DU BOUTON BLAGUE
 if not st.session_state.premium and st.session_state.afficher_premium:
     if st.button("DEVENIR PREMIUM 👑", use_container_width=True):
         with st.spinner('Connexion à Stripe...'):
-            st.session_state.stripe_url = creer_session_stripe()
+            url, erreur = creer_session_stripe()
+            if erreur:
+                st.session_state.erreur_stripe = erreur  # ON SAUVE L'ERREUR
+            else:
+                st.session_state.stripe_url = url
             st.rerun()
+
+# AFFICHER L'ERREUR SI ELLE EXISTE
+if st.session_state.get('erreur_stripe'):
+    st.error(f"ERREUR STRIPE BLOQUÉE: {st.session_state.erreur_stripe}")
+    if st.button("Effacer l'erreur"):
+        del st.session_state.erreur_stripe
+        st.rerun()
 
 # BOUTON ROUGE STRIPE
 if st.session_state.get('stripe_url'):
