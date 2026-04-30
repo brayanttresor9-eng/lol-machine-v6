@@ -32,21 +32,27 @@ BLAGUES = [
 
 # FONCTION STRIPE
 def creer_session_stripe():
+    st.write("DEBUG: J'entre dans la fonction Stripe")  # LIGNE DEBUG 1
     try:
-        stripe.api_key = st.secrets ["STRIPE_KEY"]
+        st.write("DEBUG: Je lis la clé secrète")  # LIGNE DEBUG 2
+        stripe.api_key = st.secrets["STRIPE_KEY"]
+        
+        st.write("DEBUG: Je crée la session Stripe")  # LIGNE DEBUG 3
         session = stripe.checkout.Session.create(
-            success_url="https://brayanttresor9-eng-lol-machine-v6-code-cfngds.streamlit.app/?session_id={CHECKOUT_SESSION_ID}",
-            cancel_url="https://brayanttresor9-eng-lol-machine-v6-code-cfngds.streamlit.app/",
+            success_url="https://lol-machine-v6.streamlit.app/?session_id={CHECKOUT_SESSION_ID}",
+            cancel_url="https://lol-machine-v6.streamlit.app/",
             payment_method_types=["card"],
             line_items=[{
-                "price": "price_1TQyhLDmScq27Uw61o6wMkiC",
+                "price": "price_1TQyizDMScq27Uw6FhbJv1pS",
                 "quantity": 1,
             }],
             mode="subscription",
         )
+        st.write("DEBUG: Session créée avec succès")  # LIGNE DEBUG 4
         return session.url
     except Exception as e:
-        st.error(f"ERREUR STRIPE: {e}")
+        st.error(f"ERREUR STRIPE CACHÉE: {e}")  # ON AFFICHE L'ERREUR
+        st.write(f"DEBUG ERREUR: {type(e).__name__}") 
         return None
 
 # VERIFICATION PAIEMENT AU RETOUR DE STRIPE
