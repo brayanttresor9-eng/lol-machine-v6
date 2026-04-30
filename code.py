@@ -33,7 +33,7 @@ BLAGUES = [
 # FONCTION STRIPE
 def creer_session_stripe():
     try:
-        stripe.api_key = st.secrets["STRIPE_KEY"]
+        stripe.api_key = st.secrets ["STRIPE_KEY"]
         session = stripe.checkout.Session.create(
             success_url="https://brayanttresor9-eng-lol-machine-v6-code-cfngds.streamlit.app/?session_id={CHECKOUT_SESSION_ID}",
             cancel_url="https://brayanttresor9-eng-lol-machine-v6-code-cfngds.streamlit.app/",
