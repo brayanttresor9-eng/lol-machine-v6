@@ -37,7 +37,7 @@ def creer_session_stripe():
             cancel_url="https://lol-machine-v6.streamlit.app/",
             payment_method_types=["card"],
             line_items=[{
-                "price": "price_1TQyizDMScq27Uw6FhbJv1pS",
+                "price": "price_1TQyhLDmScq27Uw61o6wMkiC",
                 "quantity": 1,
             }],
             mode="subscription",
