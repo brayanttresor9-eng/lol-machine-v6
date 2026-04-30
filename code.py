@@ -33,8 +33,8 @@ def creer_session_stripe():
     try:
         stripe.api_key = st.secrets["STRIPE_KEY"]
         session = stripe.checkout.Session.create(
-            success_url="https://lol-machine-v6.streamlit.app/?session_id={CHECKOUT_SESSION_ID}",
-            cancel_url="https://lol-machine-v6.streamlit.app/",
+            success_url="https://brayanttresor9-eng-lol-machine-v6-code-cfngds.streamlit.app/?session_id={CHECKOUT_SESSION_ID}",
+            cancel_url="https://brayanttresor9-eng-lol-machine-v6-code-cfngds.streamlit.app/",
             payment_method_types=["card"],
             line_items=[{
                 "price": "price_1TQyhLDmScq27Uw61o6wMkiC",
