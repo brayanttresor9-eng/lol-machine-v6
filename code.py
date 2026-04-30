@@ -14,6 +14,8 @@ if 'blagues_vues' not in st.session_state:
     st.session_state.blagues_vues = 0
 if 'stripe_url' not in st.session_state:
     st.session_state.stripe_url = None
+if 'afficher_premium' not in st.session_state:
+    st.session_state.afficher_premium = False
 
 # LISTE DES 50 BLAGUES
 BLAGUES = [
@@ -32,12 +34,8 @@ BLAGUES = [
 
 # FONCTION STRIPE
 def creer_session_stripe():
-    st.write("DEBUG: J'entre dans la fonction Stripe")  # LIGNE DEBUG 1
     try:
-        st.write("DEBUG: Je lis la clé secrète")  # LIGNE DEBUG 2
         stripe.api_key = st.secrets["STRIPE_KEY"]
-        
-        st.write("DEBUG: Je crée la session Stripe")  # LIGNE DEBUG 3
         session = stripe.checkout.Session.create(
             success_url="https://lol-machine-v6.streamlit.app/?session_id={CHECKOUT_SESSION_ID}",
             cancel_url="https://lol-machine-v6.streamlit.app/",
@@ -48,11 +46,9 @@ def creer_session_stripe():
             }],
             mode="subscription",
         )
-        st.write("DEBUG: Session créée avec succès")  # LIGNE DEBUG 4
         return session.url
     except Exception as e:
-        st.error(f"ERREUR STRIPE CACHÉE: {e}")  # ON AFFICHE L'ERREUR
-        st.write(f"DEBUG ERREUR: {type(e).__name__}") 
+        st.error(f"ERREUR STRIPE: {e}")
         return None
 
 # VERIFICATION PAIEMENT AU RETOUR DE STRIPE
@@ -85,21 +81,25 @@ with col2:
 
 st.divider()
 
-# BOUTON PRINCIPAL
+# BOUTON PRINCIPAL BLAGUE
 if st.button("RACONTE UNE BLAGUE 🍀", use_container_width=True, type="primary"):
     if st.session_state.premium:
         st.success(random.choice(BLAGUES))
         st.session_state.blagues_vues += 1
+        st.session_state.afficher_premium = False
     else:
         st.error("❌ Réservé aux membres Premium !")
         st.info("Débloque 50 blagues illimitées pour seulement 5$/mois")
-        
-        if st.button("DEVENIR PREMIUM 👑", use_container_width=True):
-            with st.spinner('Connexion à Stripe...'):
-                st.session_state.stripe_url = creer_session_stripe()
-                st.rerun()
+        st.session_state.afficher_premium = True
 
-# BOUTON ROUGE STRIPE - EN DEHORS DE TOUS LES AUTRES BOUTONS
+# BOUTON PREMIUM - EN DEHORS DU BOUTON BLAGUE
+if not st.session_state.premium and st.session_state.afficher_premium:
+    if st.button("DEVENIR PREMIUM 👑", use_container_width=True):
+        with st.spinner('Connexion à Stripe...'):
+            st.session_state.stripe_url = creer_session_stripe()
+            st.rerun()
+
+# BOUTON ROUGE STRIPE
 if st.session_state.get('stripe_url'):
     st.link_button(
         "👉 PAYER 5$/MOIS SUR STRIPE",
